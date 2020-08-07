@@ -33,7 +33,7 @@ function returnFirstArgument(date) {
  */
 
 function sumWithDefaults(a, b = 100) {
-    let sum = a + b;
+    const sum = a + b;
 
     return sum;
 }
@@ -83,14 +83,8 @@ function returnCounter(number = 0) {
   Пример:
     returnArgumentsArray(1, 2, 3) вернет [1, 2, 3]
  */
-function returnArgumentsArray() {
-    let args = [];
-
-    if (arguments.length > 0) {
-        args = [...arguments];
-    }
-
-    return args;
+function returnArgumentsArray(...rest) {
+    return rest;
 }
 
 /*
