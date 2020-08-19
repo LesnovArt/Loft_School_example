@@ -85,27 +85,68 @@ function upperProps(obj) {
   Напишите аналог встроенного метода slice для работы с массивами
   Посмотрите как работает slice и повторите это поведение для массива, который будет передан в параметре array
  */
-// let slArray = [23, 25, 42, 54, 48];
-
-function slice(array, from = 0, to = array.length) {
-    const slicedArray = [];
-    let start = from >= 0 ? from : array.length + from;
-    let end = to > 0 ? to : array.length + to;
-    let size = array.length;
-
-    if (end < start) {
-        return [];
-    } 
-    size = end - start;
-
-    if (size > 0) {           
-        for (let i = 0; i < size; i++) {
-            slicedArray.push(array[start++]);
-        }
+function slice(array, from, to) {
+    if ((from === undefined && to === undefined) || (from === 0 && to === undefined)) {
+        return array;
     }
 
-    return slicedArray;
+    const result = []; 
+    let _from = from;
+
+    if (from === undefined) {
+        _from = 0;
+    }
+
+    if (_from < 0) {
+        _from = 0;
+    }
+
+    if (_from > array.length) {
+        return result;
+    }
+
+    let _to = to;
+
+    if ( to === undefined) {
+        _to =array.length;
+    }
+
+    if (to < 0) {
+        _to = array.length + to;
+    }
+
+    if (to > array.length) {
+        _to = array.length;
+    }
+
+    for (let position = _from; position < _to; position++) {
+        result.push(array[position]);
+    }
+
+    return result;
 }
+
+// let slArray = [23, 25, 42, 54, 48];
+
+// function slice(array, from = 0, to = array.length) {
+//     const slicedArray = [];
+//     let start = from >= 0 ? from : array.length + from;
+//     let end = to > 0 ? to : array.length + to;
+//     let size = array.length;
+
+//     if (end < start) {
+//         return [];
+//     } 
+//     size = end - start;
+
+//     if (size > 0) {           
+//         for (let i = 0; i < size; i++) {
+//             slicedArray.push(array[start++]);
+//         }
+//     }
+
+//     return slicedArray;
+// }
 // console.log(slice(slArray, 2, 4));
 // console.log(slArray.slice(2, 4))
 
