@@ -25,9 +25,12 @@
  Если вы создаете новые html-элементы и добавляете их на страницу, то добавляйте их только в этот контейнер
 
  Пример:
-   const newDiv = document.createElement('div');
-   homeworkContainer.appendChild(newDiv);
+    const newDiv = document.createElement('div');
+    homeworkContainer.appendChild(newDiv);
  */
+import {loadAndSortTowns} from '../src/index';
+import { loader } from 'mini-css-extract-plugin';
+
 const homeworkContainer = document.querySelector('#homework-container');
 
 /*
@@ -37,6 +40,7 @@ const homeworkContainer = document.querySelector('#homework-container');
  https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json
  */
 function loadTowns() {
+    return loadAndSortTowns();
 }
 
 /*
@@ -51,6 +55,7 @@ function loadTowns() {
    isMatching('Moscow', 'Moscov') // false
  */
 function isMatching(full, chunk) {
+    return full.toLowerCase().includes(chunk.toLowerCase())
 }
 
 /* Блок с надписью "Загрузка" */
@@ -61,10 +66,51 @@ const filterBlock = homeworkContainer.querySelector('#filter-block');
 const filterInput = homeworkContainer.querySelector('#filter-input');
 /* Блок с результатами поиска */
 const filterResult = homeworkContainer.querySelector('#filter-result');
+/* block with button retry */
+const retryBlock = homeworkContainer.querySelector('#retry-block');
+/** get button for reloading */
+const reloadButton = homeworkContainer.querySelector('.reload');
+
+/** hide blocks while making loading */
+retryBlock.classList.add('hidden');
+filterBlock.classList.add('hidden');
+
+reloadButton.addEventListener('click', () => {
+    getTowns();
+})
+
+let towns = [];
+
+/** async function for loading towns & catching errors */
+async function getTowns () {
+    try {
+        towns = loadTowns();
+        loadingBlock.classList.add('hidden');
+        filterBlock.classList.remove('hidden');
+    } catch (e) {
+        console.alert('Не удалось загрузить города')
+        loadingBlock.classList.add('hidden');
+        retryBlock.classList.remove('hidden');
+    }
+}
 
 filterInput.addEventListener('keyup', function() {
-    // это обработчик нажатия кливиш в текстовом поле
+    // // это обработчик нажатия кливиш в текстовом поле
+    // filterResult.innerText = '';
+    // const fragment = document.createDocumentFragment();
+
+    // for (const town of towns) {
+    //     if (filterInput.value && isMatching(town.name, filterInput.value)) {
+    //         const matchDiv = document.createElement('div');
+    //         matchDiv.textContent = town.name;
+    //         fragment.append(matchDiv);
+    //     }
+    // }
+
+    // filterResult.append(fragment);
 });
+
+getTowns ()
 
 export {
     loadTowns,
