@@ -28,8 +28,7 @@
     const newDiv = document.createElement('div');
     homeworkContainer.appendChild(newDiv);
  */
-import {loadAndSortTowns} from '../src/index';
-import { loader } from 'mini-css-extract-plugin';
+import {loadAndSortTowns} from './index';
 
 const homeworkContainer = document.querySelector('#homework-container');
 
@@ -55,7 +54,7 @@ function loadTowns() {
    isMatching('Moscow', 'Moscov') // false
  */
 function isMatching(full, chunk) {
-    return full.toLowerCase().includes(chunk.toLowerCase())
+    return full.toLowerCase().includes(chunk.toLowerCase());
 }
 
 /* Блок с надписью "Загрузка" */
@@ -68,10 +67,12 @@ const filterInput = homeworkContainer.querySelector('#filter-input');
 const filterResult = homeworkContainer.querySelector('#filter-result');
 /* block with button retry */
 const retryBlock = homeworkContainer.querySelector('#retry-block');
-/** get button for reloading */
-const reloadButton = homeworkContainer.querySelector('.reload');
+/* get button for reloading */
+const reloadButton = homeworkContainer.querySelector('#reload');
 
-/** hide blocks while making loading */
+/* hide blocks while making loading */
+let towns = [];
+
 retryBlock.classList.add('hidden');
 filterBlock.classList.add('hidden');
 
@@ -79,38 +80,42 @@ reloadButton.addEventListener('click', () => {
     getTowns();
 })
 
-let towns = [];
+filterInput.addEventListener('keyup', function() {
+    // это обработчик нажатия кливиш в текстовом поле
+    filterUpdate(this.value)
+});
 
-/** async function for loading towns & catching errors */
+/* async function for loading towns & catching errors */
 async function getTowns () {
     try {
-        towns = loadTowns();
+        towns = await loadTowns();
+        retryBlock.classList.add('hidden');
         loadingBlock.classList.add('hidden');
         filterBlock.classList.remove('hidden');
     } catch (e) {
-        console.alert('Не удалось загрузить города')
+        console.log('Не удалось загрузить города');
         loadingBlock.classList.add('hidden');
         retryBlock.classList.remove('hidden');
     }
 }
 
-filterInput.addEventListener('keyup', function() {
-    // // это обработчик нажатия кливиш в текстовом поле
-    // filterResult.innerText = '';
-    // const fragment = document.createDocumentFragment();
+function filterUpdate(filterValue) {
+    filterResult.innerHTML = '';
+    const fragment = document.createDocumentFragment();
 
-    // for (const town of towns) {
-    //     if (filterInput.value && isMatching(town.name, filterInput.value)) {
-    //         const matchDiv = document.createElement('div');
-    //         matchDiv.textContent = town.name;
-    //         fragment.append(matchDiv);
-    //     }
-    // }
+    for (const town of towns) {
+        if (filterValue && isMatching(town.name, filterValue)) {
+            const matchDiv = document.createElement('div');
 
-    // filterResult.append(fragment);
-});
+            matchDiv.textContent = town.name;
+            fragment.append(matchDiv);
+        }
+    }
 
-getTowns ()
+    filterResult.append(fragment);
+}
+
+getTowns();
 
 export {
     loadTowns,
