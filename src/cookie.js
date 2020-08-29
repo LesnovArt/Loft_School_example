@@ -43,10 +43,94 @@ const addButton = homeworkContainer.querySelector('#add-button');
 // таблица со списком cookie
 const listTable = homeworkContainer.querySelector('#list-table tbody');
 
-filterNameInput.addEventListener('keyup', function() {
-    // здесь можно обработать нажатия на клавиши внутри текстового поля для фильтрации cookie
-});
+listTable.addEventListener('click', (e) => {
+    const aim = e.target;
+
+    if (aim.tagName === 'BUTTON') {
+        let delCookieName = aim.closest('tr').children[0].textContent;
+
+        deleteCookie(delCookieName);      
+        let elem = aim.closest('tr');
+
+        elem.parentNode.removeChild(elem);
+    }
+})
+
+function deleteCookie(name) {
+    let cookieDate = new Date(); 
+
+    cookieDate.setTime( cookieDate.getTime() - 1 );
+    document.cookie = name += "=; expires=" + cookieDate.toGMTString();
+}
+
+function addTable(name, value) {
+    let newTr = document.createElement('tr');
+    let newThOne = document.createElement('td');
+    let newThTwo = document.createElement('td');
+    let deleteButton = document.createElement('button');
+
+    newTr.classList.add('oldCookies');
+
+    newThOne.innerText = name;
+    newThTwo.innerText = value;
+    deleteButton.innerText = 'удалить';
+
+    newTr.append(newThOne);
+    newTr.append(newThTwo);
+    newTr.append(deleteButton);
+    listTable.append(newTr);
+}
+
+function getCookies(name) {
+    let results = document.cookie.match ( '(^|;) ?' + name + '=([^;]*)(;|$)' );
+
+    if (results)
+        return (unescape (results[2]) );
+    else
+        return null;
+}
+
+function setCookies(name, value) {
+    let cookiesStr = name + '=' + escape(value);   
+    document.cookie = cookiesStr;
+
+    addTable(name, value)
+}
+
+// filterNameInput.addEventListener('keyup', function() {
+//     // здесь можно обработать нажатия на клавиши внутри текстового поля для фильтрации cookie
+//     console.log(document.cookie);
+//     addTable()
+// });
 
 addButton.addEventListener('click', () => {
     // здесь можно обработать нажатие на кнопку "добавить cookie"
+    if (!addNameInput.value) {
+        addNameInput.placeholder = 'empty field ! ! !';
+        return;
+    } else if (!addValueInput.value) {
+        addValueInput.placeholder = 'empty field ! ! !';
+        return;
+    }
+
+    if( getCookies(addNameInput.value)){
+        console.log(document.cookie = `${addNameInput.value}=${addValueInput.value}`);
+        changeCookieValue(addNameInput.value, addValueInput.value)
+    } else {
+        setCookies(addNameInput.value, addValueInput.value);
+    };
+
+    
+    addNameInput.value = '';
+    addValueInput.value = '';
 });
+
+function changeCookieValue(name, value) {
+    let rows = [...listTable.children];
+
+    for (let row of rows) {
+        if (row.children[0].textContent === name) {
+            row.children[1].textContent = value;
+        }
+    }
+}
