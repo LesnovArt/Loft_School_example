@@ -72,7 +72,7 @@ function init() {  //  init the map and point the center
                         '<form class="ballon_form">',
                             '<input class="ballon_form-name" name="name" placeholder="Ваше имя"></input>',
                             '<input class="ballon_form-adress" name="adress" placeholder="Укажите место"></input>',
-                            '<textarea class="ballon_form-review" name="review" placeholder="Поделитесь впечатлениями"></textarea>',
+                            '<textarea class="ballon_form-review" name="review" placeholder="Поделитесь впечатлениями" required></textarea>',
                         '</form>',
                         '<button class="balloon_add">добавить</button>',
                     ].join(''),                   
@@ -80,16 +80,39 @@ function init() {  //  init the map and point the center
         })
         .then(function (reviewObj) {
             
-        
-            myMap.balloon.events.add('click', function (e) {
-                const target = e.get('target');
-                const balloonButton = target.properties.get('balloonContentFooter');
-
-                placemarks.push(reviewObj.get(0));
-                console.log(placemarks);
-                target.properties.set('balloonContent', 'Thank`s');
+            document.addEventListener('click', (e) => {
+                const target = e.target;
+                const reviewsHolder = document.querySelector('.ballon_reviews');
+                const name = document.querySelector('.ballon_form-name');
+                const adress = document.querySelector('.ballon_form-adress');
+                const review = document.querySelector('.ballon_form-review');
+                const now = new Date();
+                const date = now.getFullYear() + '.' + ('0' + (now.getMonth() + 1)).slice(-2) + '.' + ('0' + now.getDate()).slice(-2);
+                const time = now.getHours() + ':' + ('0' + (now.getMinutes() + 1)).slice(-2) + ':' + ('0' + now.getSeconds()).slice(-2);
+                const fullDate = `${date} ${time}`;
+                
+                if (target.className === 'balloon_add') {
+                    if (!name.value || !review.value) {
+                        alert('check the fields') 
+                    }else {
+                        reviewsHolder.innerHTML = `<div><strong>${name.value}</strong> ${adress.value} ${fullDate}</div> <div> ${review.value} </div>`
+                        name.value = '';
+                        adress.value = '';
+                        review.value = '';
+                    }
+                    
+                }
 
             })
+        
+            // myMap.balloon.events.add('click', function (e) {
+            //     const target = e.get('target');
+            //     const balloonButton = target.properties.get('balloonContentFooter');
+
+            //     placemarks.push(reviewObj.get(0));
+            //     console.log(placemarks);
+            //     target.properties.set('balloonContent', 'Thank`s');
+            // })
         })
     }
     

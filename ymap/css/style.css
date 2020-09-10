@@ -22,6 +22,7 @@ body{
 }
 .ballon_reviews{
     height: 100px;
+    margin-top: 5px;
 }
 .ballon_title{
     color:orange;
@@ -35,17 +36,18 @@ body{
 .ballon_form-name{
     border-radius: 5px;
     padding: 5px;
+    margin-bottom: 5px;
 }
 .ballon_form-adress{
     border-radius: 5px;
     padding: 5px;
-    text-overflow: ellipsis;
-    word-wrap: nowrap;
+    margin-bottom: 5px;
 }
 .ballon_form-review{
     height: 50px;
     border-radius: 5px;
     padding: 5px;
+    margin-bottom: 5px;
 }
 .balloon_add{
     background-color: orange;
