@@ -1,6 +1,6 @@
 ymaps.ready(init);
 
-let placemarks = [];
+
 let geoObjects = [];
 let newPlacemark;
 
@@ -11,6 +11,9 @@ function init() {  //  init the map and point the center
         controls: ['zoomControl'],
     });
 
+
+    let placemarks = [];
+
     const fullscreenControl = new ymaps.control.FullscreenControl();  // fullscreen mode
     myMap.controls.add(fullscreenControl);
     fullscreenControl.enterFullscreen();
@@ -19,19 +22,19 @@ function init() {  //  init the map and point the center
         // get coords of click
         const coords = e.get('coords');
         // if we already have it? change it`s location
-        if (newPlacemark) {
-            newPlacemark.geometry.setCoordinates(coords);
-        }
-        // if no - create
-        else {
-            newPlacemark = createPlacemark(coords);
-            myMap.geoObjects.add(newPlacemark);
-            // listen the event of replacing
-            newPlacemark.events.add('dragend', function () {
-                getAddress(newPlacemark.geometry.getCoordinates());
-            });
-            placemarks.push(newPlacemark);
-        }
+        // if (newPlacemark) {
+        //     newPlacemark.geometry.setCoordinates(coords);
+        // }
+        // // if no - create
+        // else {
+        //     // newPlacemark = createPlacemark(coords);
+        //     myMap.geoObjects.add(newPlacemark);
+        //     // listen the event of replacing
+        //     newPlacemark.events.add('dragend', function () {
+        //         getAddress(newPlacemark.geometry.getCoordinates());
+        //     });
+            
+        // }
         getAddress(coords);
     });
     
@@ -46,11 +49,13 @@ function init() {  //  init the map and point the center
 
     // find out the adress
     function getAddress(coords) {
+        newPlacemark = createPlacemark(coords);
+        myMap.geoObjects.add(newPlacemark);
         newPlacemark.properties.set('iconCaption', 'поиск...');
         ymaps.geocode(coords).then(function (res) {
             let firstGeoObject = res.geoObjects.get(0);
 
-            newPlacemark.properties
+            return newPlacemark.properties
                 .set({
                     // create balloon
                     iconCaption: [
@@ -60,36 +65,35 @@ function init() {  //  init the map and point the center
                         firstGeoObject.getThoroughfare() || firstGeoObject.getPremise()
                     ].filter(Boolean).join(', '),
                     // add the balloon`s content
-                    balloonContent: firstGeoObject.getAddressLine()
-                });
-        });
-    }
+                    balloonContent:  [
+                        `<div class="ballon_adress">${firstGeoObject.getAddressLine()}</div>`,
+                        '<div class="ballon_reviews">Отзывов пока нет...</div>',
+                        '<div class="ballon_title">ВАШ ОТЗЫВ</div>',
+                        '<form class="ballon_form">',
+                            '<input class="ballon_form-name" name="name" placeholder="Ваше имя"></input>',
+                            '<input class="ballon_form-adress" name="adress" placeholder="Укажите место"></input>',
+                            '<textarea class="ballon_form-review" name="review" placeholder="Поделитесь впечатлениями"></textarea>',
+                        '</form>',
+                        '<button class="balloon_add">добавить</button>',
+                    ].join(''),                   
+                });  
+        })
+        .then(function (reviewObj) {
+            
+        
+            myMap.balloon.events.add('click', function (e) {
+                const target = e.get('target');
+                const balloonButton = target.properties.get('balloonContentFooter');
 
-//     // function adds placemarks onto the map
-//     function updateMap() {   
-//         for (let i = 0; i < placemarks.length; i++) {  // 
-//             geoObjects[i] = new ymaps.Placemark([placemarks[i].latitude, placemarks[i].longitude], {
-//                 hintContent: placemarks[i].hintContent,
-//                 balloonContent: placemarks[i].balloonContent
-//             },
-//             {
-//                 // iconLayout: 'default#Image',
-//                 // iconImageHref: '',
-//                 // iconImageSize: [46, 57],
-//                 // iconImageOffset: [-23, -57]
-//             })           
-//         }    
-//         const clusterer = new ymaps.Clusterer({  // create clusterer
-//             // clusterIcons: [
-//             //     {
-//             //         href: '',
-//             //         size: [100, 100],
-//             //         offset: [-50, -50]
-//             //     }
-//             // ],
-//             // clusterIconContentLayout: null
-//         });
-//         myMap.geoObjects.add(clusterer);  // added clusterer
-//         clusterer.add(geoObjects);  // added objects into the clusterer
-//     }
+                placemarks.push(reviewObj.get(0));
+                console.log(placemarks);
+                target.properties.set('balloonContent', 'Thank`s');
+
+            })
+        })
+    }
+    
 }
+
+
+
