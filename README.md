@@ -1,10 +1,25 @@
-## LoftSchool example project
 
-### Доступные команды
+# Socket.IO Chat
 
-* `npm install` - установить зависимости
-* `npm run prepare` - запустить тесты и проверить стиль кода
-* `npm run test` - запустить тесты
-* `npm run codestyle` - проверить стиль кода
-* `npm run start` - запустить встроенный сервер и следить за изменениями файлов
-* `npm run build` - собрать проект в папку `build`
+A simple chat demo for socket.io
+
+## How to use
+
+```
+$ cd socket.io
+$ npm install
+$ cd examples/chat
+$ npm install
+$ npm start
+```
+
+And point your browser to `http://localhost:3000`. Optionally, specify
+a port by supplying the `PORT` env variable.
+
+## Features
+
+- Multiple users can join a chat room by each entering a unique username
+on website load.
+- Users can type chat messages to the chat room.
+- A notification is sent to all users when a user joins or leaves
+the chatroom.
